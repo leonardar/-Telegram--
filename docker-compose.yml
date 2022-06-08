@@ -1,0 +1,32 @@
+version: '3.8'
+
+services:
+
+  redis: 
+    image: redis:6.2.6-alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - tm_bot_network
+
+  bot:
+    build: .
+    volumes:
+      - .:/home/app/src
+    depends_on:
+      - redis
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env
+    networks:
+      - tm_bot_network
+
+volumes:
+  redis_data:
+
+networks:
+  tm_bot_network:
+    driver: bridge
